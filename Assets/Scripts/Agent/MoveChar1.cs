@@ -13,6 +13,8 @@ public class MoveChar1 : MonoBehaviour
 	private Animator anim;
 	public ThirdPersonCharacter character;
 
+	// ray hit
+	public Camera cam;
 
 	void Start ()
 	{
@@ -26,23 +28,28 @@ public class MoveChar1 : MonoBehaviour
 
 	void Update ()
 	{
-		//character.Move (Vector3.forward + Vector3.right, false, false);
 		// wander
 		if (agent.pathPending != true && agent.remainingDistance < 1) {
+			agent.speed = Random.Range (1, 6);
 			agent.SetDestination (Wander());
-			agent.speed = Random.Range(1,6);
 		}
 
-        // move
-        Vector3 worldDeltaPosition = agent.nextPosition - transform.position;
+		// use mouse click as desination
+		if (Input.GetMouseButtonDown (0)) {
+			agent.speed = Random.Range (1, 6);
+			agent.SetDestination (GoToClick ());
+
+		}
+
+
+		//******* move agent *********
+		Vector3 worldDeltaPosition = agent.nextPosition - transform.position;
         // character.Move (Vector3.forward, false, false);
 		//agent.destination = target.position;
 
 		if (agent.remainingDistance > agent.stoppingDistance) 
 		{
-            character.Move (agent.desiredVelocity, false, false);
-			//character.Move (agent.desiredVelocity * agent.speed * SpeedMultiplier, false, false);
-			//character.Move (Vector3.forward + Vector3.right, false, false);
+			character.Move (agent.desiredVelocity * agent.speed/2, false, false);
 		} 
 		else 
 		{
@@ -53,8 +60,15 @@ public class MoveChar1 : MonoBehaviour
 		// Pull character towards agent
 		if (worldDeltaPosition.magnitude > agent.radius)
 		{
-			//transform.position = agent.nextPosition - 1.9f*worldDeltaPosition;
+			// Pull character towards agent
+			//transform.position = agent.nextPosition - 0.99f*worldDeltaPosition;
+			// Pull agent towards character
+			agent.nextPosition = transform.position + 0.6f * worldDeltaPosition;
 		}
+		//******* move agent *********
+
+
+
 
 	}
 
@@ -65,6 +79,19 @@ public class MoveChar1 : MonoBehaviour
 		// Update position based on animation movement using navigation surface height
 		Vector3 position = anim.rootPosition;
 		transform.position = position;
+	}
+
+	// go to mousee click
+	Vector3 GoToClick ()
+	{
+		Ray ray = cam.ScreenPointToRay (Input.mousePosition);
+		RaycastHit hit;
+
+		if (Physics.Raycast (ray, out hit)) {
+			return hit.point;
+		} else {
+			return Vector3.zero;
+		}
 	}
 
 	// return random position to move to

@@ -13,6 +13,9 @@ public class MoveChar0 : MonoBehaviour
 
 	public ThirdPersonCharacter character;
 
+	// ray hit
+	public Camera cam;
+
 	// THID SCRIPT WORKS
 	void Start ()
 	{
@@ -30,6 +33,12 @@ public class MoveChar0 : MonoBehaviour
 			agent.speed = Random.Range(1,6);
 		}
 
+		// use mouse click as desination
+		if (Input.GetMouseButtonDown (0)) {
+			agent.speed = Random.Range (1, 6);
+			agent.SetDestination (GoToClick ());
+		}
+
 		//agent.destination = target.position;
 
 		if (agent.remainingDistance > agent.stoppingDistance) 
@@ -41,6 +50,19 @@ public class MoveChar0 : MonoBehaviour
 		{
 			character.Move (Vector3.zero, false, false);
 
+		}
+	}
+
+	// go to mouse click
+	Vector3 GoToClick ()
+	{
+		Ray ray = cam.ScreenPointToRay (Input.mousePosition);
+		RaycastHit hit;
+
+		if (Physics.Raycast (ray, out hit)) {
+			return hit.point;
+		} else {
+			return Vector3.zero;
 		}
 	}
 
