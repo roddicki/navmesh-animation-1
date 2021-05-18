@@ -22,7 +22,7 @@ public class MoveChar1 : MonoBehaviour
 		anim = this.GetComponent<Animator>();
         // Don’t update position automatically
         agent.updatePosition = false;
-		agent.updateRotation = true;
+		agent.updateRotation = false;
 		SpeedMultiplier = 0.4f;
 	}
 
@@ -30,13 +30,13 @@ public class MoveChar1 : MonoBehaviour
 	{
 		// wander
 		if (agent.pathPending != true && agent.remainingDistance < 1) {
-			agent.speed = Random.Range (1, 6);
+			agent.speed = 3; //Random.Range (1, 6);
 			agent.SetDestination (Wander());
 		}
 
 		// use mouse click as desination
 		if (Input.GetMouseButtonDown (0)) {
-			agent.speed = Random.Range (1, 6);
+			agent.speed = 3; //Random.Range (1, 6);
 			agent.SetDestination (GoToClick ());
 
 		}
@@ -45,7 +45,14 @@ public class MoveChar1 : MonoBehaviour
 		//******* move agent *********
 		Vector3 worldDeltaPosition = agent.nextPosition - transform.position;
         // character.Move (Vector3.forward, false, false);
-		//agent.destination = target.position;
+		// agent.destination = target.position;
+
+		// decrease speed with distance
+		if (agent.remainingDistance/2 < agent.speed && agent.remainingDistance/2 > 1.0f)
+		{
+			agent.speed = agent.remainingDistance/2;
+		}
+		
 
 		if (agent.remainingDistance > agent.stoppingDistance) 
 		{
