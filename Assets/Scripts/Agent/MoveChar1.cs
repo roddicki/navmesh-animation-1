@@ -6,9 +6,8 @@ using UnityStandardAssets.Characters.ThirdPerson;
 
 public class MoveChar1 : MonoBehaviour
 {
-    [Range (0.0f, 2.0f)]
-	public float SpeedMultiplier;
 
+	// needed to move character
 	private NavMeshAgent agent;
 	private Animator anim;
 	public ThirdPersonCharacter character;
@@ -18,12 +17,12 @@ public class MoveChar1 : MonoBehaviour
 
 	void Start ()
 	{
+		// needed to move character
 		agent = GetComponent<NavMeshAgent> ();
 		anim = this.GetComponent<Animator>();
         // Don’t update position automatically
         agent.updatePosition = false;
 		agent.updateRotation = false;
-		SpeedMultiplier = 0.4f;
 	}
 
 	void Update ()
@@ -44,19 +43,19 @@ public class MoveChar1 : MonoBehaviour
 
 		//******* move agent *********
 		Vector3 worldDeltaPosition = agent.nextPosition - transform.position;
-        // character.Move (Vector3.forward, false, false);
-		// agent.destination = target.position;
+		float nextRotation = agent.destination.y - transform.position.y;
+		Debug.Log(agent.destination);
 
 		// decrease speed with distance
 		if (agent.remainingDistance/2 < agent.speed && agent.remainingDistance/2 > 1.0f)
 		{
-			agent.speed = agent.remainingDistance/2;
+			//agent.speed = agent.remainingDistance/2;
 		}
 		
 
 		if (agent.remainingDistance > agent.stoppingDistance) 
 		{
-			character.Move (agent.desiredVelocity * agent.speed/2, false, false);
+			character.Move ( (agent.desiredVelocity * agent.speed/2) , false, false);
 		} 
 		else 
 		{
